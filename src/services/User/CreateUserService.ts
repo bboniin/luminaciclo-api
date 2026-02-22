@@ -52,18 +52,16 @@ class CreateUserService {
     );
 
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        photo: user.photo,
-        birthday: user.birthday,
-        phone_number: user.phone_number,
-        phase: user.phase,
-        days_cycle: user.days_cycle,
-        days_menstruation: user.days_menstruation,
-        plan_name: user.plan_name,
-      },
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      photo: user.photo,
+      birthday: user.birthday,
+      phone_number: user.phone_number,
+      phase: user.phase,
+      days_cycle: user.days_cycle,
+      days_menstruation: user.days_menstruation,
+      plan_name: user.plan_name,
       token: token,
     };
   }
