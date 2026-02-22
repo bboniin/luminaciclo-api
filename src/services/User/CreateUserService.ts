@@ -62,6 +62,7 @@ class CreateUserService {
       days_cycle: user.days_cycle,
       days_menstruation: user.days_menstruation,
       plan_name: user.plan_name,
+      total_cycles: 0,
       token: token,
     };
   }

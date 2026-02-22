@@ -161,7 +161,13 @@ class RecalculateCycleService {
       },
     });
 
-    return userEdited;
+    const total_cycles = await prismaClient.cycle.count({
+      where: {
+        user_id: user.id,
+      },
+    });
+
+    return { ...userEdited, total_cycles: total_cycles };
   }
 }
 

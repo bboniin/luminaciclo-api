@@ -42,9 +42,9 @@ class AuthUserService {
       },
     );
 
-    const cycle_open = await prismaClient.cycle.findFirst({
-      orderBy: {
-        start_date: "desc",
+    const total_cycles = await prismaClient.cycle.count({
+      where: {
+        user_id: user.id,
       },
     });
 
@@ -60,6 +60,7 @@ class AuthUserService {
       days_menstruation: user.days_menstruation,
       plan_name: user.plan_name,
       start_cycle: user.start_cycle,
+      total_cycles: total_cycles,
       token: token,
     };
   }

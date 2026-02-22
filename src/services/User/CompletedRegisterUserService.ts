@@ -65,6 +65,12 @@ class CompletedRegisterUserService {
       },
     });
 
+    const total_cycles = await prismaClient.cycle.count({
+      where: {
+        user_id: userId,
+      },
+    });
+
     return {
       id: user.id,
       name: user.name,
@@ -76,6 +82,7 @@ class CompletedRegisterUserService {
       days_cycle: user.days_cycle,
       days_menstruation: user.days_menstruation,
       start_cycle: user.start_cycle,
+      total_cycles: total_cycles,
       plan_name: user.plan_name,
     };
   }
