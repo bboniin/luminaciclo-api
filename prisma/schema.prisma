@@ -1,0 +1,271 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// criar migrate yarn prisma migrate dev
+
+model User {
+  id                    String     @id @default(uuid())
+  email                 String
+  social_id             String?
+  socyal_type           String     @default("email")
+  password              String?  
+  name                  String
+  photo                 String?
+  phone_number          String?
+  birthday              DateTime?
+  is_menopause          Boolean    @default(false)
+  active                Boolean    @default(true)
+  days_cycle            Int?       @default(0)
+  days_menstruation     Int?       @default(0)
+  start_cycle           DateTime   @default(now())
+  phase                 Phase?
+  plan_name             Plan       @default(FREE)
+  expire_plan           DateTime   @default(now())
+  plan_active           Boolean    @default(false)
+
+  created_at            DateTime?  @default(now())
+  updated_at            DateTime?  @default(now())
+  accessed_at           DateTime?  @default(now())
+
+  diaries               Diarie[]
+  purchases             Purchase[]
+  menstruations         Menstruation[]
+  cycles                Cycle[]
+  chats                 Chat[]
+
+  @@map("users")
+}
+
+model Admin {
+  id            String    @id @default(uuid())
+  email         String
+  password      String  
+  name          String
+  photo         String?
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now())
+
+  @@map("admins")
+}
+
+model Diarie {
+  id            String    @id @default(uuid())
+  message       String?
+  symptoms      String?
+  created_at    DateTime? @default(now())    
+
+  user          User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+
+  @@map("diaries")
+}
+
+
+model Menstruation {
+  id                  String    @id @default(uuid())
+  date                DateTime
+ 
+  created_at          DateTime? @default(now())  
+
+  user                User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id             String
+
+  @@map("menstruations")
+}
+
+model Cycle {
+  id                  String     @id @default(uuid())
+  start_date          DateTime
+  end_date            DateTime?
+  duration            Int?   
+  menstrual_days      Int?
+
+  user                User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id             String
+
+  @@map("cycles")
+}
+
+model Chat {
+  id            String    @id @default(uuid())
+  description   String
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now())       
+
+  user          User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+
+  messages      Message[]
+
+  @@map("chats")
+}
+
+model Message {
+  id            String    @id @default(uuid())
+  text          String
+  send_type     String
+  created_at    DateTime? @default(now())    
+
+  chat          Chat  @relation(fields: [chat_id], references: [id], onDelete: Cascade)
+  chat_id       String
+
+  @@map("messages")
+}
+
+model Nutrition {
+  id                 String    @id @default(uuid())
+  title              String
+  meal_type          String
+  duration           String
+  calories           String
+  photo              String
+  phase              Phase
+  language           String
+  active             Boolean   @default(true)
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now())     
+
+  contents          NutritionContent[]
+
+  @@map("nutritions")
+}
+
+model NutritionContent {
+  id                 String    @id @default(uuid())
+  type               Content
+  value              String
+  order              Int
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now()) 
+
+  nutrition          Nutrition  @relation(fields: [nutrition_id], references: [id], onDelete: Cascade)
+  nutrition_id       String
+
+  @@map("nutritionContents")
+}
+
+model Exercise {
+  id                 String    @id @default(uuid())
+  title              String
+  intensity          String
+  duration           String
+  body_part          String
+  description        String
+  photo              String
+  phase              Phase
+  language           String
+  active             Boolean   @default(true)
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now()) 
+
+  contents          ExerciseContent[]    
+
+  @@map("exercises")
+}
+
+model ExerciseContent {
+  id                 String    @id @default(uuid())
+  type               Content
+  value              String
+  order              Int
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now()) 
+
+  exercise          Exercise  @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
+  exercise_id       String
+
+  @@map("exerciseContents")
+}
+
+
+model Insight {
+  id                 String    @id @default(uuid())
+  title              String
+  description        String
+  photo              String
+  session            String
+  phase              Phase
+  language           String
+  active             Boolean   @default(true)
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now())  
+
+  @@map("insights")
+}
+
+model Article {
+  id                 String    @id @default(uuid())
+  title              String
+  title_photo        String
+  session            String
+  photo              String
+  language           String
+  active             Boolean   @default(true)
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now())
+  
+  contents           ArticleContent[]
+
+  @@map("articles")
+}
+
+model ArticleContent {
+  id                 String    @id @default(uuid())
+  type               Content
+  value              String
+  order              Int
+  created_at         DateTime? @default(now())  
+  updated_at         DateTime? @default(now()) 
+
+  article            Article  @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  article_id         String
+
+  @@map("articleContents")
+}
+
+model Purchase {
+  id          String    @id @default(uuid())
+  purchase_id String
+  token_id    String
+  store       String
+  plan_name   String
+  status      String
+  value       Float
+  visible     Boolean   @default(true)
+  create_at   DateTime? @default(now())
+  update_at   DateTime? @default(now())
+
+  user          User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+
+  @@map("purchases")
+}
+
+enum Phase {
+  MENSTRUAL
+  FOLICULAR
+  OVULATORIA
+  LUTEA
+}
+
+enum Content {
+  TEXT
+  TITLE
+  IMAGE
+  VIDEO
+}
+
+enum Plan {
+  FREE
+  PREMIUM_MENSAL
+  PREMIUM_ANUAL
+}
