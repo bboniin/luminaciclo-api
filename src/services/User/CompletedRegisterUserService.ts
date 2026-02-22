@@ -54,9 +54,6 @@ class CompletedRegisterUserService {
 
     let phase = Phase.LUTEA;
 
-    if (menstruations.length) {
-    }
-
     const user = await prismaClient.user.update({
       where: {
         id: userId,
@@ -68,11 +65,6 @@ class CompletedRegisterUserService {
       },
     });
 
-    const cycle_open = await prismaClient.cycle.findFirst({
-      orderBy: {
-        start_date: "desc",
-      },
-    });
     return {
       id: user.id,
       name: user.name,
@@ -83,7 +75,7 @@ class CompletedRegisterUserService {
       phase: user.phase,
       days_cycle: user.days_cycle,
       days_menstruation: user.days_menstruation,
-      cycle_open: cycle_open,
+      start_cycle: user.start_cycle,
       plan_name: user.plan_name,
     };
   }
